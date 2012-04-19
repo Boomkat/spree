@@ -15,4 +15,6 @@ String.class_eval do
   include Spree::Core::Ext::String
 end
 
-LIKE = ActiveRecord::Base.connection.adapter_name == 'PostgreSQL' ? 'ILIKE' : 'LIKE'
+ActiveSupport.on_load(:active_record) do
+  LIKE = ActiveRecord::Base.connection.adapter_name == 'PostgreSQL' ? 'ILIKE' : 'LIKE'
+end

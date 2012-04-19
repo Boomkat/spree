@@ -9,13 +9,17 @@ module Spree
       end
 
       def self.activate
-        Dir.glob(File.join(File.dirname(__FILE__), "../../../app/**/*_decorator*.rb")) do |c|
-          Rails.configuration.cache_classes ? require(c) : load(c)
+        ActiveSupport.on_load(:active_record) do
+          Dir.glob(File.join(File.dirname(__FILE__), "../../../app/**/*_decorator*.rb")) do |c|
+            Rails.configuration.cache_classes ? require(c) : load(c)
+          end
         end
       end
 
       config.to_prepare &method(:activate).to_proc
-      ActiveRecord::Base.class_eval { include Spree::TokenResource }
+      ActiveSupport.on_load(:active_record) do
+        ActiveRecord::Base.class_eval { include Spree::TokenResource }
+      end
     end
   end
 end
